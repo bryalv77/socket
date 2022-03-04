@@ -8,7 +8,7 @@ console.log('Starting...');
 const users = {}
 
 io.on('connection', socket => {
-  console.log('connected');
+  console.log('connected test');
   socket.on('new-user', name => {
     console.log('new user', name);
     users[socket.id] = name
