@@ -1,14 +1,19 @@
-const io = require('socket.io')(80, {
-  cors: {
-    origin: 'https://bryalv77.github.io/chat-io/',
-    methods: ["GET", "POST"]
-  }
-});
-console.log('Starting...');
-const users = {}
+const express = require('express');
+const socketIO = require('socket.io');
+require('dot-env')();
 
-io.on('connection', socket => {
-  console.log('connected test');
+const PORT = process.env.PORT || 3000;
+const INDEX = '/index.html';
+
+const server = express();
+server.use((req, res) => {
+  res.sendFile(INDEX, { root: __dirname });
+}).listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+const io = socketIO(server);
+
+io.on('connection', (socket) => {
+  console.log('Client connected');
   socket.on('new-user', name => {
     console.log('new user', name);
     users[socket.id] = name
@@ -19,8 +24,10 @@ io.on('connection', socket => {
     socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] })
   })
   socket.on('disconnect', () => {
-    console.log('disconnected');
+    console.log('Client disconnected');
     socket.broadcast.emit('user-disconnected', users[socket.id])
     delete users[socket.id]
   })
-})
+});
+
+setInterval(() => io.emit('time', new Date().toTimeString()), 1000);
