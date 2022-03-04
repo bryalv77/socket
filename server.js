@@ -18,6 +18,8 @@ const server = app.listen(PORT, () => {
 
 const io = socketIO(server);
 
+const users = {};
+
 io.on('connection', (socket) => {
   console.log('Client connected');
   socket.on('new-user', name => {
