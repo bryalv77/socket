@@ -1,4 +1,9 @@
-const io = require('socket.io')();
+const io = require('socket.io')(80, {
+  cors: {
+    origin: 'https://bryalv77.github.io/chat-io/',
+    methods: ["GET", "POST"]
+  }
+});
 console.log('Starting...');
 const users = {}
 
